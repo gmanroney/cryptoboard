@@ -18,15 +18,24 @@ Business Rules
 --------------
 * Business rules for each exchange to be in configuration file.
 * List of exchanges:
---- https://docs.bitfinex.com/docs
---- https://docs.gdax.com/#time
---- https://www.bitstamp.net/websocket/
---- https://github.com/binance-exchange/binance-official-api-docs
---- https://api.hitbtc.com/#socket-market-data
---- https://www.npmjs.com/package/node.bittrex.api
---- https://www.okex.com/ws_getStarted.html
---- https://github.com/huobiapi/API_Docs_en/wiki/WS_General
---- https://docs.gemini.com/websocket-api/#market-data
+
+ https://docs.bitfinex.com/docs
+    
+ https://docs.gdax.com/#time
+
+ https://www.bitstamp.net/websocket/
+
+ https://github.com/binance-exchange/binance-official-api-docs
+
+ https://api.hitbtc.com/#socket-market-data
+
+ https://www.npmjs.com/package/node.bittrex.api
+
+ https://www.okex.com/ws_getStarted.html
+
+ https://github.com/huobiapi/API_Docs_en/wiki/WS_General
+
+ https://docs.gemini.com/websocket-api/#market-data
 
 Deliverables
 ------------
