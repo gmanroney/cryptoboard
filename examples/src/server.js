@@ -57,12 +57,12 @@ wss.onmessage = (msg) => {
 function main () {
 
   // Loop through exchanges (preparation for later)
-  for (var i=0; i < config.exchanges.length; i++ )
+  for (var i=1; i < config.exchanges.length; i++ )
   {
-    console.log("Exchange Name = " + config.exchanges[i]["name"]);
-    console.log("Exchange WSSURL = " + config.exchanges[i]["wssurl"]);
-    console.log("Exchange Pairs Count = "  + JSON.stringify(config.exchanges[i]["pairs"].length));
-    console.log("FUNCTION -> ",config.exchanges[i]["wssurl"], config.exchanges[i]["name"],config.exchanges[i]["pairs"] )
+    console.log("Exchange Name =" + config.exchanges[i]["name"]);
+    console.log("Exchange WSSURL =" + config.exchanges[i]["wssurl"]);
+    console.log("Exchange Pairs =" + config.exchanges[i]["pairs"]);
+    console.log("FUNCTION -> ",config.exchanges[i]["wssurl"], config.exchanges[i]["wssurl"],config.exchanges[i]["wssurl"] )
   };
 
 }
