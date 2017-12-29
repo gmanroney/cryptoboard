@@ -1,13 +1,23 @@
 /*jshint esversion: 6 */
 
 var sys = require('util');
+var config = require('../config/default.json');
 
 // Connect to Redis
 var redis = require('redis');
-var client = redis.createClient('6379','127.0.0.1');
+var client = redis.createClient(config.redis.port,config.redis.host);
 client.on('connect', function() {
     console.log('Connected to Redis Server');
 });
+
+// Loop through exchanges (preparation for later)
+for (var i=1; i < config.exchanges.length; i++ )
+{
+  console.log("----------------");
+  console.log(config.exchanges[i]["name"]);
+  console.log(config.exchanges[i]["wssurl"]);
+  console.log(config.exchanges[i]["pairs"]);
+};
 
 // Connect to Exchange
 const WebSocket = require('ws')
