@@ -9,63 +9,93 @@
       "name": "bitfinex",
       "docurl": "https://docs.bitfinex.com/docs",
       "wssurl": "wss://api.bitfinex.com/ws",
-      "pairs": "BTCUSD, LTCUSD, LTCBTC, ETHUSD, ETHBTC, ETCUSD, ETCBTC, BFXUSD, BFXBTC, RRTUSD, RRTBTC, ZECUSD, ZECBTC",
+      "pairs": [
+        { "symbol": "BTCUSD"},
+        { "symbol": "LTCUSD"},
+        { "symbol": "LTCBTC"},
+        { "symbol": "ETHUSD"},
+        { "symbol": "ETHBTC"},
+        { "symbol": "ETCUSD"},
+        { "symbol": "ETCBTC"},
+        { "symbol": "BFXUSD"},
+        { "symbol": "BFXBTC"},
+        { "symbol": "RRTUSD"},
+        { "symbol": "RRTBTC"},
+        { "symbol": "ZECUSD"},
+        { "symbol": "ZECBTC"}
+      ],
       "active": "Y"
     },
     {
       "name": "gdax",
       "docurl": "https://docs.gdax.com/#websocket-feed",
       "wssurl": "wss://ws-feed.gdax.com",
-      "pairs": "BTCUSD, LTCUSD, LTCBTC, ETHUSD, ETHBTC, ETCUSD, ETCBTC, BFXUSD, BFXBTC, RRTUSD, RRTBTC, ZECUSD, ZECBTC",
+      "pairs": [
+        { "symbol": "NONE"}
+      ],
       "active": "N"
     },
     {
       "name": "bitstamp",
       "docurl": "https://www.bitstamp.net/websocket/",
       "wssurl": "???",
-      "pairs": "BTCUSD, LTCUSD, LTCBTC, ETHUSD, ETHBTC, ETCUSD, ETCBTC, BFXUSD, BFXBTC, RRTUSD, RRTBTC, ZECUSD, ZECBTC",
+      "pairs": [
+        { "symbol": "NONE"}
+      ],
       "active": "N"
     },
     {
       "name": "binance",
       "docurl": "https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md",
       "wssurl": "wss://stream.binance.com:9443",
-      "pairs": "BTCUSD, LTCUSD, LTCBTC, ETHUSD, ETHBTC, ETCUSD, ETCBTC, BFXUSD, BFXBTC, RRTUSD, RRTBTC, ZECUSD, ZECBTC",
+      "pairs": [
+        { "symbol": "NONE"}
+      ],
       "active": "N"
     },
     {
       "name": "hitbtc",
       "docurl": "https://api.hitbtc.com/#socket-market-data",
       "wssurl": "wss://api.hitbtc.com/api/2/ws",
-      "pairs": "BTCUSD, LTCUSD, LTCBTC, ETHUSD, ETHBTC, ETCUSD, ETCBTC, BFXUSD, BFXBTC, RRTUSD, RRTBTC, ZECUSD, ZECBTC",
+      "pairs": [
+        { "symbol": "NONE"}
+      ],
       "active": "N"
     },
     {
       "name": "bittrex",
       "docurl": "https://www.npmjs.com/package/node.bittrex.api",
       "wssurl": "???",
-      "pairs": "BTCUSD, LTCUSD, LTCBTC, ETHUSD, ETHBTC, ETCUSD, ETCBTC, BFXUSD, BFXBTC, RRTUSD, RRTBTC, ZECUSD, ZECBTC",
+      "pairs": [
+        { "symbol": "NONE"}
+      ],
       "active": "N"
     },
     {
       "name": "okex",
       "docurl": "https://www.okex.com/ws_getStarted.html",
       "wssurl": "wss://real.okex.com:10440/websocket/okexapi",
-      "pairs": "BTCUSD, LTCUSD, LTCBTC, ETHUSD, ETHBTC, ETCUSD, ETCBTC, BFXUSD, BFXBTC, RRTUSD, RRTBTC, ZECUSD, ZECBTC",
+      "pairs": [
+        { "symbol": "NONE"}
+      ],
       "active": "N"
     },
     {
       "name": "huobiapi",
       "docurl": "https://github.com/huobiapi/API_Docs_en/wiki/WS_General",
       "wssurl": "wss://api.huobi.pro/ws",
-      "pairs": "BTCUSD, LTCUSD, LTCBTC, ETHUSD, ETHBTC, ETCUSD, ETCBTC, BFXUSD, BFXBTC, RRTUSD, RRTBTC, ZECUSD, ZECBTC",
+      "pairs": [
+        { "symbol": "NONE"}
+      ],
       "active": "N"
     },
     {
       "name": "gemini",
       "docurl": "https://docs.gemini.com/websocket-api/#market-data",
       "wssurl": "wss://api.gemini.com/v1/marketdata/:symbol",
-      "pairs": "BTCUSD, LTCUSD, LTCBTC, ETHUSD, ETHBTC, ETCUSD, ETCBTC, BFXUSD, BFXBTC, RRTUSD, RRTBTC, ZECUSD, ZECBTC",
+      "pairs": [
+        { "symbol": "NONE"}
+      ],
       "active": "N"
     }
   ]

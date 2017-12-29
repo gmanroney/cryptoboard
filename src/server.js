@@ -1,5 +1,6 @@
 /*jshint esversion: 6 */
 
+//  General Libraries Needed By Application
 var sys = require('util');
 var config = require('../config/default.json');
 
@@ -10,20 +11,11 @@ client.on('connect', function() {
     console.log('Connected to Redis Server');
 });
 
-// Loop through exchanges (preparation for later)
-for (var i=1; i < config.exchanges.length; i++ )
-{
-  console.log("----------------");
-  console.log(config.exchanges[i]["name"]);
-  console.log(config.exchanges[i]["wssurl"]);
-  console.log(config.exchanges[i]["pairs"]);
-};
-
-// Connect to Exchange
+// Connect To Exchange
 const WebSocket = require('ws')
 const wss = new WebSocket('wss://api.bitfinex.com/ws/')
 
-// Subscribe to channel
+// Subscribe To Channel In Exchange
 var bc_queue = 'BITFINEX:BTCUSD';
 wss.onopen = () => {
   console.log('Subscribing: BTCUSD');
@@ -61,3 +53,19 @@ wss.onmessage = (msg) => {
     }
   }
 }
+
+function main () {
+
+  // Loop through exchanges (preparation for later)
+  for (var i=1; i < config.exchanges.length; i++ )
+  {
+    console.log("Exchange Name =" + config.exchanges[i]["name"]);
+    console.log("Exchange WSSURL =" + config.exchanges[i]["wssurl"]);
+    console.log("Exchange Pairs =" + config.exchanges[i]["pairs"]);
+    console.log("FUNCTION -> ",config.exchanges[i]["wssurl"], config.exchanges[i]["wssurl"],config.exchanges[i]["wssurl"] )
+  };
+
+}
+
+// Start application
+main();
