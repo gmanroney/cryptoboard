@@ -1,0 +1,36 @@
+{
+  "name": "cryptoboard",
+  "version": "1.1.0",
+  "description": "gets crypto-currency prices from different sources and displays results in a webpage",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "gerard.x.moroney@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1"
+  },
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "dependencies": {
+    "angularjs": "0.0.1",
+    "chai": "^4.1.2",
+    "express": "^4.15.2",
+    "redis": "^2.8.0",
+    "websockets": "^0.2.0",
+    "websockets-client": "0.0.1",
+    "ws": "^3.3.3"
+  },
+  "keywords": [
+    "cryptocurrency",
+    "prices",
+    "board",
+    "real-time",
+    "websocket",
+    "redis"
+  ]
+}
