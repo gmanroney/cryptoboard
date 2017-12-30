@@ -14,5 +14,5 @@ client.subscribe("BITFINEX:BTCUSD");
 client.on("message", function(channel, message) {
   const msg = JSON.parse(message);
   //console.log("Message '" + message + "' on channel '" + channel + "' arrived!")
-  console.log(channel,msg["tr_id"],msg["tr_side"]);
+  console.log(channel,msg.tr_id,msg.tr_side);
 });

@@ -9,7 +9,7 @@ client.on('connect', function() {
     console.log('Connected to Redis Server');
 });
 
-client.subscribe("BITFINEX:LTCUSD");
+client.subscribe("BITFINEX:ETHUSD");
 
 client.on("message", function(channel, message) {
   //const msg = JSON.parse(message);

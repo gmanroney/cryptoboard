@@ -58,7 +58,15 @@
       "docurl": "https://api.hitbtc.com/#socket-market-data",
       "wssurl": "wss://api.hitbtc.com/api/2/ws",
       "pairs": [
-        { "symbol": "NONE"}
+        { "symbol": "BTCUSD"},
+        { "symbol": "LTCUSD"},
+        { "symbol": "LTCBTC"},
+        { "symbol": "ETHUSD"},
+        { "symbol": "ETHBTC"},
+        { "symbol": "ETCUSD"},
+        { "symbol": "ETCBTC"},
+        { "symbol": "ZECUSD"},
+        { "symbol": "ZECBTC"}
       ],
       "active": "N"
     },
