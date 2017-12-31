@@ -110,7 +110,6 @@ function processGEMINI(client,exchange_name,exchange_wss,exchange_symbol) {
     // parse response and create queue name
     var message = JSON.parse([msg.data]);
     var bc_queue = exchange_name + ':' + exchange_symbol;
-    //console.log(message);
 
     if (message.socket_sequence == 0 ) {
       console.log( bc_queue, " currency = ", exchange_symbol);
@@ -133,55 +132,57 @@ function processGEMINI(client,exchange_name,exchange_wss,exchange_symbol) {
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from HUOBIAPI
-function processHUOBIAPI(client,exchange_name,exchange_wss,exchange_symbol) {
-
-  // Connect To Exchange
+function processHUOBIAPI(client,exchange_name,exchange_wss,exchange_symbol)
+{
+  // Define constants
   const WebSocket = require('ws');
-  const wss = new WebSocket(exchange_wss);
-
-  // Generate ID for connection
-  var base = Math.floor((new Date).getTime()/1000) + 10000;
-  var top = base + 10000;
-  var conID = Math.floor((Math.random() * top) + base);
+  const pako = require('pako');
 
   // Open connection once one is established
-  wss.onopen = () => {
+  var wss = new WebSocket(exchange_wss);
 
+  wss.onopen = () =>
+  {
     // Send request to subscribe
+    var symbol = exchange_symbol.toLowerCase()
+    console.log("Send: " + symbol);
     wss.send(JSON.stringify(
       {
-        "sub": "market." + exchange_symbol + ".kline.1min",
-        "id": conID
+        "sub": "market." + symbol + ".kline.1min",
+        "id": symbol
       }
     ));
   };
 
   // Parse channel information and send to Redis
-  wss.onmessage = (msg) => {
-
-    // parse response and create queue name
-    var message = JSON.parse([msg.data]);
+  // IMPORTANT: Do not know why wss.on works and not wss.onmessage. Created stackoverflow question for this at https://tinyurl.com/y7tj5a9o.
+  //            Seems to be to do with fact that it is a wrapper but not exactly sure why. 
+  wss.on ('message', (data) => {
+  {
+    console.log("Receive message", data);
+    let text = pako.inflate(data, {
+        to: 'string'
+    });
+    msg = JSON.parse(text);
     var bc_queue = exchange_name + ':' + exchange_symbol;
-    //console.log(message);
-
-    if (message.socket_sequence == 0 ) {
-      console.log( bc_queue, " currency = ", exchange_symbol);
-    }
-    // loop through event and extract trade reco
-    for ( i = 0; i < message.events.length; i++ )
+    if (msg.ping)
     {
-      if ( message.events[i].type == 'trade' )
-      {
-        tr_id=message.events[i].tid;
-        tr_amount=message.events[i].amount;
-        tr_price=message.events[i].price;
-        tr_side=( message.events[i+1].side == 'ask' ? 'sell' : 'buy' );
-        tr_timestamp=new Date(message.timestampms);
-        msg = { "tr_id": tr_id, "tr_timestamp": tr_timestamp, "tr_price": tr_price, "tr_amount": tr_amount, "tr_side": tr_side };
-        client.publish(bc_queue,JSON.stringify(msg));
-      }
+      wss.send(JSON.stringify(
+        {
+          pong: msg.ping
+        }
+      ));
+    } else if (msg.tick) {
+      tr_id="DoNotKnow";
+      tr_amount=msg.tick.amount;
+      tr_price=msg.tick.close;
+      tr_side="DoNotKnow";
+      tr_timestamp=new Date(msg.ts);
+      msgout = { "tr_id": tr_id, "tr_timestamp": tr_timestamp, "tr_price": tr_price, "tr_amount": tr_amount, "tr_side": tr_side };
+      client.publish(bc_queue,JSON.stringify(msgout));
     }
-  }
+
+  }});
 }
 
 module.exports = {
