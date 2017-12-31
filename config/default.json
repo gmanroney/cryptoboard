@@ -100,9 +100,11 @@
     {
       "name": "gemini",
       "docurl": "https://docs.gemini.com/websocket-api/#market-data",
-      "wssurl": "wss://api.gemini.com/v1/marketdata/:symbol",
+      "wssurl": "wss://api.gemini.com/v1/marketdata",
       "pairs": [
-        { "symbol": "NONE"}
+        { "symbol": "BTCUSD"},
+        { "symbol": "ETHUSD"},
+        { "symbol": "ETHBTC"}
       ],
       "active": "N"
     }
