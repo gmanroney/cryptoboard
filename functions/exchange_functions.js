@@ -132,8 +132,61 @@ function processGEMINI(client,exchange_name,exchange_wss,exchange_symbol) {
   }
 }
 
+// Function to subscribe to stream, transform data and publish to Redis from HUOBIAPI
+function processHUOBIAPI(client,exchange_name,exchange_wss,exchange_symbol) {
+
+  // Connect To Exchange
+  const WebSocket = require('ws');
+  const wss = new WebSocket(exchange_wss);
+
+  // Generate ID for connection
+  var base = Math.floor((new Date).getTime()/1000) + 10000;
+  var top = base + 10000;
+  var conID = Math.floor((Math.random() * top) + base);
+
+  // Open connection once one is established
+  wss.onopen = () => {
+
+    // Send request to subscribe
+    wss.send(JSON.stringify(
+      {
+        "sub": "market." + exchange_symbol + ".kline.1min",
+        "id": conID
+      }
+    ));
+  };
+
+  // Parse channel information and send to Redis
+  wss.onmessage = (msg) => {
+
+    // parse response and create queue name
+    var message = JSON.parse([msg.data]);
+    var bc_queue = exchange_name + ':' + exchange_symbol;
+    //console.log(message);
+
+    if (message.socket_sequence == 0 ) {
+      console.log( bc_queue, " currency = ", exchange_symbol);
+    }
+    // loop through event and extract trade reco
+    for ( i = 0; i < message.events.length; i++ )
+    {
+      if ( message.events[i].type == 'trade' )
+      {
+        tr_id=message.events[i].tid;
+        tr_amount=message.events[i].amount;
+        tr_price=message.events[i].price;
+        tr_side=( message.events[i+1].side == 'ask' ? 'sell' : 'buy' );
+        tr_timestamp=new Date(message.timestampms);
+        msg = { "tr_id": tr_id, "tr_timestamp": tr_timestamp, "tr_price": tr_price, "tr_amount": tr_amount, "tr_side": tr_side };
+        client.publish(bc_queue,JSON.stringify(msg));
+      }
+    }
+  }
+}
+
 module.exports = {
   processBITFINEX,
   processHITBTC,
-  processGEMINI
+  processGEMINI,
+  processHUOBIAPI
 };

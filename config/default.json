@@ -93,7 +93,10 @@
       "docurl": "https://github.com/huobiapi/API_Docs_en/wiki/WS_General",
       "wssurl": "wss://api.huobi.pro/ws",
       "pairs": [
-        { "symbol": "NONE"}
+        { "symbol": "BCCBTC"},
+        { "symbol": "LTCBTC"},
+        { "symbol": "ETHBTC"},
+        { "symbol": "ETCBTC"}
       ],
       "active": "N"
     },

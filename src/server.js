@@ -44,7 +44,7 @@ function main () {
       }
     }
 
-    if ( exchange_name == 'GEMINI')
+    if ( exchange_name == 'xGEMINI')
     {
       for(var j = 0; j < exchange_symbol_array.length; j++)
       {
@@ -53,6 +53,17 @@ function main () {
         exFn.processGEMINI(client, exchange_name, exchange_wss, exchange_symbol);
       }
     }
+
+    if ( exchange_name == 'HUOBIAPI')
+    {
+      for(var j = 0; j < exchange_symbol_array.length; j++)
+      {
+        exchange_symbol = exchange_symbol_array[j].symbol;
+        console.log(exchange_name, exchange_wss, exchange_symbol);
+        exFn.processHUOBIAPI(client, exchange_name, exchange_wss, exchange_symbol);
+      }
+    }
+
   }
 
   // End of main function
