@@ -73,9 +73,10 @@
     {
       "name": "bittrex",
       "docurl": "https://www.npmjs.com/package/node.bittrex.api",
-      "wssurl": "???",
+      "wssurl": "Not Available",
       "pairs": [
-        { "symbol": "NONE"}
+        { "symbol": "BTC-ETH"},
+        { "symbol": "BTC-XRP"}
       ],
       "active": "N"
     },

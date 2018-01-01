@@ -2,6 +2,7 @@
 
 //  General Libraries Needed By Application
 var sys = require('util');
+//var bittrex = require('../node_modules/node.bittrex.api/node.bittrex.api');
 var config = require('../config/default.json');
 
 // Connect to Redis
@@ -54,13 +55,31 @@ function main () {
       }
     }
 
-    if ( exchange_name == 'HUOBIAPI')
+    if ( exchange_name == 'xHUOBIAPI')
     {
       for(var j = 0; j < exchange_symbol_array.length; j++)
       {
         exchange_symbol = exchange_symbol_array[j].symbol;
         console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processHUOBIAPI(client, exchange_name, exchange_wss, exchange_symbol);
+      }
+    }
+
+    if ( exchange_name == 'BITTREX')
+    {
+      for(var j = 0; j < exchange_symbol_array.length; j++)
+      {
+        // concatenate all of the symbols together because thats the way this API works for some reason
+        if ( j == 0 ) {
+          exchange_symbol = "\'" + exchange_symbol_array[j].symbol + "\'" ;
+        } else {
+          exchange_symbol = exchange_symbol + "," + "\'" + exchange_symbol_array[j].symbol + "\'";
+        }
+        if ( j ==  ( exchange_symbol_array.length - 1) )
+        {
+          console.log(exchange_name, exchange_wss, exchange_symbol);
+          exFn.processBITTREX(client, exchange_name, exchange_wss, exchange_symbol);
+        }
       }
     }
 

@@ -156,7 +156,7 @@ function processHUOBIAPI(client,exchange_name,exchange_wss,exchange_symbol)
 
   // Parse channel information and send to Redis
   // IMPORTANT: Do not know why wss.on works and not wss.onmessage. Created stackoverflow question for this at https://tinyurl.com/y7tj5a9o.
-  //            Seems to be to do with fact that it is a wrapper but not exactly sure why. 
+  //            Seems to be to do with fact that it is a wrapper but not exactly sure why.
   wss.on ('message', (data) => {
   {
     console.log("Receive message", data);
@@ -185,9 +185,42 @@ function processHUOBIAPI(client,exchange_name,exchange_wss,exchange_symbol)
   }});
 }
 
+
+// Function to subscribe to stream, transform data and publish to Redis from BITTREX
+function processBITTREX(client,exchange_name,exchange_wss,exchange_symbol)
+{
+  // Define constants
+  var bittrex = require('../node_modules/node.bittrex.api/node.bittrex.api');
+
+  bittrex.options({
+    websockets: {
+      onConnect: function() {
+        console.log('Websocket connected');
+        bittrex.websockets.subscribe(['BTC-ETH','BTC-XRP'], function(data) {
+          if (data.M === 'updateExchangeState') {
+            data.A.forEach(function(data_for) {
+              console.log(data_for);
+            });
+          }
+        });
+      },
+      onDisconnect: function() {
+        console.log('Websocket disconnected');
+      }
+    }
+  });
+
+  var websocketClient;
+  bittrex.websockets.client(function(client) {
+    websocketClient = client;
+  });
+
+}
+
 module.exports = {
   processBITFINEX,
   processHITBTC,
   processGEMINI,
-  processHUOBIAPI
+  processHUOBIAPI,
+  processBITTREX
 };
