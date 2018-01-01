@@ -260,6 +260,11 @@ function processOKEX(client, exchange_name,exchange_wss,exchange_symbol) {
         tr_id=records[i][0];
         tr_price=records[i][1];
         tr_amount=records[i][2];
+        // https://tinyurl.com/ydet9asx
+        // The ask price is what sellers are willing to take for it. 
+        // - if you are selling a stock, you are going to get the bid price,
+        // - if you are buying a stock you are going to get the ask price.
+        // not sure if what below is correct. Need to recheck
         tr_side=( records[i][4] == "ask" ? "buy" : "sell" );
         msg = { "tr_id": tr_id, "tr_timestamp": tr_timestamp, "tr_price": tr_price, "tr_amount": tr_amount, "tr_side": tr_side };
         console.log(msg);
