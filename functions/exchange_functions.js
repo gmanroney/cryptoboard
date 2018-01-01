@@ -240,41 +240,33 @@ function processOKEX(client, exchange_name,exchange_wss,exchange_symbol) {
   // Parse channel information and send to Redis
   wss.onmessage = (msg) => {
     var resp = JSON.parse(msg.data);
-    var head = resp.event;
-    var head_body = resp[1];
+    var resp_channel = resp[0].channel;
+    var resp_data_channel = resp[0].data.channel;
     var bc_queue = exchange_name + ':' + exchange_symbol;
 
-    //console.log(msg.data);
-    // Get channel and symbol from response
-    console.log(resp[0].channel);
-    if ( resp[0].channel == "addChannel" )
+    // Parse and transform record returned and publish to redis
+    if ( resp_channel == "addChannel" )
     {
-      var channelName = resp[0].data.channel;
+      // Output channel name if first record
       console.log( bc_queue, " channel name = ", channelName );
-    } else if ( resp[0].data.channel == channelName )
+    } else if ( resp_channel == channelName )
     {
-        records = resp[0].data;
-        for ( i = 0; i < records.length; i++ )
-        {
-          tr_timestamp=records[i][3];
-          tr_id=records[i][0];
-          tr_price=records[i][1];
-          tr_amount=records[i][2];
-          tr_side=( records[i][4] == "ask" ? "buy" : "sell" );
-          console.log(tr_id,tr_side,tr_amount,tr_price,tr_timestamp);
-        }
-
-        // Transform message and send to Redis channel named exchange:symbol
-        tr_timestamp=new Date(resp[4]*1000);
-        tr_id=resp[3];
-        tr_price=resp[5];
-        tr_amount=resp[6];
-        tr_side=( tr_amount > 0 ? "buy" : "sell" );
+      // parse record for data and submit to redis
+      records = resp[0].data;
+      for ( i = 0; i < records.length; i++ )
+      {
+        console.log(i,records[i]);
+        tr_timestamp=records[i][3];
+        tr_id=records[i][0];
+        tr_price=records[i][1];
+        tr_amount=records[i][2];
+        tr_side=( records[i][4] == "ask" ? "buy" : "sell" );
         msg = { "tr_id": tr_id, "tr_timestamp": tr_timestamp, "tr_price": tr_price, "tr_amount": tr_amount, "tr_side": tr_side };
+        console.log(msg);
         client.publish(bc_queue,JSON.stringify(msg));
+      }
     } else {
       console.log("Unexpected record. Please investigate");
-      console.log(resp);
     }
   };
 }
