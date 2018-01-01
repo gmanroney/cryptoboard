@@ -131,6 +131,7 @@ function processGEMINI(client,exchange_name,exchange_wss,exchange_symbol) {
   }
 }
 
+
 // Function to subscribe to stream, transform data and publish to Redis from HUOBIAPI
 function processHUOBIAPI(client,exchange_name,exchange_wss,exchange_symbol)
 {
@@ -185,7 +186,6 @@ function processHUOBIAPI(client,exchange_name,exchange_wss,exchange_symbol)
   }});
 }
 
-
 // Function to subscribe to stream, transform data and publish to Redis from BITTREX
 function processBITTREX(client,exchange_name,exchange_wss,exchange_symbol)
 {
@@ -217,10 +217,73 @@ function processBITTREX(client,exchange_name,exchange_wss,exchange_symbol)
 
 }
 
+
+// Function to subscribe to stream, transform data and publish to Redis from OKEX
+function processOKEX(client, exchange_name,exchange_wss,exchange_symbol) {
+
+  // Connect To Exchange
+  const WebSocket = require('ws');
+  const wss = new WebSocket(exchange_wss);
+  const channelName = 'ok_sub_spot_' + exchange_symbol + '_deals';
+  // Open connection once one is established
+  wss.onopen = () => {
+
+    // Send request to subscribe
+    wss.send(JSON.stringify(
+      {
+        'event':'addChannel',
+        'channel': channelName
+      }
+    ));
+  };
+
+  // Parse channel information and send to Redis
+  wss.onmessage = (msg) => {
+    var resp = JSON.parse(msg.data);
+    var head = resp.event;
+    var head_body = resp[1];
+    var bc_queue = exchange_name + ':' + exchange_symbol;
+
+    //console.log(msg.data);
+    // Get channel and symbol from response
+    console.log(resp[0].channel);
+    if ( resp[0].channel == "addChannel" )
+    {
+      var channelName = resp[0].data.channel;
+      console.log( bc_queue, " channel name = ", channelName );
+    } else if ( resp[0].data.channel == channelName )
+    {
+        records = resp[0].data;
+        for ( i = 0; i < records.length; i++ )
+        {
+          tr_timestamp=records[i][3];
+          tr_id=records[i][0];
+          tr_price=records[i][1];
+          tr_amount=records[i][2];
+          tr_side=( records[i][4] == "ask" ? "buy" : "sell" );
+          console.log(tr_id,tr_side,tr_amount,tr_price,tr_timestamp);
+        }
+
+        // Transform message and send to Redis channel named exchange:symbol
+        tr_timestamp=new Date(resp[4]*1000);
+        tr_id=resp[3];
+        tr_price=resp[5];
+        tr_amount=resp[6];
+        tr_side=( tr_amount > 0 ? "buy" : "sell" );
+        msg = { "tr_id": tr_id, "tr_timestamp": tr_timestamp, "tr_price": tr_price, "tr_amount": tr_amount, "tr_side": tr_side };
+        client.publish(bc_queue,JSON.stringify(msg));
+    } else {
+      console.log("Unexpected record. Please investigate");
+      console.log(resp);
+    }
+  };
+}
+
 module.exports = {
   processBITFINEX,
   processHITBTC,
   processGEMINI,
   processHUOBIAPI,
-  processBITTREX
+  processBITTREX,
+  processOKEX
 };

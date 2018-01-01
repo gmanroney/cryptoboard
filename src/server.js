@@ -25,6 +25,7 @@ function main () {
     var exchange_wss = config.exchanges[i].wssurl;
     var exchange_symbol_array = config.exchanges[i].pairs;
 
+    // Loop through config for BITFINEX & connect, transform and create Redis pub/sub
     if ( exchange_name == 'xBITFINEX')
     {
       for(var j = 0; j < exchange_symbol_array.length; j++)
@@ -35,6 +36,7 @@ function main () {
       }
     }
 
+    // Loop through config for HITBTC & connect, transform and create Redis pub/sub
     if ( exchange_name == 'xHITBTC')
     {
       for(var j = 0; j < exchange_symbol_array.length; j++)
@@ -45,6 +47,7 @@ function main () {
       }
     }
 
+    // Loop through config for GEMINI & connect, transform and create Redis pub/sub
     if ( exchange_name == 'xGEMINI')
     {
       for(var j = 0; j < exchange_symbol_array.length; j++)
@@ -55,6 +58,7 @@ function main () {
       }
     }
 
+    // Loop through config for HUOBIAPI & connect, transform and create Redis pub/sub
     if ( exchange_name == 'xHUOBIAPI')
     {
       for(var j = 0; j < exchange_symbol_array.length; j++)
@@ -65,7 +69,19 @@ function main () {
       }
     }
 
-    if ( exchange_name == 'BITTREX')
+    // Loop through config for OKEX & connect, transform and create Redis pub/sub
+    if ( exchange_name == 'OKEX')
+    {
+      for(var j = 0; j < exchange_symbol_array.length; j++)
+      {
+        exchange_symbol = exchange_symbol_array[j].symbol;
+        console.log(exchange_name, exchange_wss, exchange_symbol);
+        exFn.processOKEX(client, exchange_name, exchange_wss, exchange_symbol);
+      }
+    }
+
+    // Loop through config for BITTREX & connect, transform and create Redis pub/sub
+    if ( exchange_name == 'xBITTREX')
     {
       for(var j = 0; j < exchange_symbol_array.length; j++)
       {

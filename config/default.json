@@ -85,7 +85,7 @@
       "docurl": "https://www.okex.com/ws_getStarted.html",
       "wssurl": "wss://real.okex.com:10440/websocket/okexapi",
       "pairs": [
-        { "symbol": "NONE"}
+        { "symbol": "LTC_BTC" }
       ],
       "active": "N"
     },
