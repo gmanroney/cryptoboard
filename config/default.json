@@ -85,7 +85,27 @@
       "docurl": "https://www.okex.com/ws_getStarted.html",
       "wssurl": "wss://real.okex.com:10440/websocket/okexapi",
       "pairs": [
-        { "symbol": "LTC_BTC" }
+        { "symbol": "LTC_BTC" },
+        { "symbol": "ETH_BTC" },
+        { "symbol": "ETC_BTC" },
+        { "symbol": "BCH_BTC" },
+        { "symbol": "BTC_USDT" },
+        { "symbol": "ETH_USDT" },
+        { "symbol": "LTC_USDT" },
+        { "symbol": "ETC_USDT" },
+        { "symbol": "BCH_USDT" },
+        { "symbol": "ETC_ETH" },
+        { "symbol": "BT1_BTC" },
+        { "symbol": "BT2_BTC" },
+        { "symbol": "BTG_BTC" },
+        { "symbol": "QTUM_BTC" },
+        { "symbol": "HSR_BTC" },
+        { "symbol": "NEO_BTC" },
+        { "symbol": "GAS_BTC" },
+        { "symbol": "QTUM_USDT" },
+        { "symbol": "HSR_USDT" },
+        { "symbol": "NEO_USDT" },
+        { "symbol": "GAS_USDT" }
       ],
       "active": "N"
     },

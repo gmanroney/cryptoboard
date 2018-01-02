@@ -1,3 +1,5 @@
+var moment=require('moment');
+
 // Function to subscribe to stream, transform data and publish to Redis from BITFINEX
 function processBITFINEX(client, exchange_name,exchange_wss,exchange_symbol) {
 
@@ -255,20 +257,27 @@ function processOKEX(client, exchange_name,exchange_wss,exchange_symbol) {
       records = resp[0].data;
       for ( i = 0; i < records.length; i++ )
       {
-        console.log(i,records[i]);
-        tr_timestamp=records[i][3];
-        tr_id=records[i][0];
-        tr_price=records[i][1];
-        tr_amount=records[i][2];
+        // Have used this routine to convert time to GMT; it assumes source also has daylight saving time.
+        // This is not the best way to do it so will need to be revisited sometime.
+        var tr_ts=records[i][3].split(":");
+        var tr_th=Number(tr_ts[0]) + 16;
+        tr_th=( tr_th > 23 ? tr_th = tr_th - 24 : tr_th );
+        var tr_d=moment().format("YYYY/MM/DD");
+        var tr_timestamp = new Date(tr_d + " " + tr_th + ":" + tr_ts[1] + ":" + tr_ts[2]);
+
+        var tr_id=records[i][0];
+        var tr_price=records[i][1];
+        var tr_amount=records[i][2];
+
         // https://tinyurl.com/ydet9asx
-        // The ask price is what sellers are willing to take for it. 
+        // The ask price is what sellers are willing to take for it.
         // - if you are selling a stock, you are going to get the bid price,
         // - if you are buying a stock you are going to get the ask price.
         // not sure if what below is correct. Need to recheck
         tr_side=( records[i][4] == "ask" ? "buy" : "sell" );
-        msg = { "tr_id": tr_id, "tr_timestamp": tr_timestamp, "tr_price": tr_price, "tr_amount": tr_amount, "tr_side": tr_side };
-        console.log(msg);
-        client.publish(bc_queue,JSON.stringify(msg));
+        msgout = { "tr_id": tr_id, "tr_timestamp": tr_timestamp, "tr_price": tr_price, "tr_amount": tr_amount, "tr_side": tr_side };
+        client.publish(bc_queue,JSON.stringify(msgout));
+        
       }
     } else {
       console.log("Unexpected record. Please investigate");
