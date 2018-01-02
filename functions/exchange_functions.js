@@ -309,7 +309,7 @@ function processGDAX(client, exchange_name,exchange_wss,exchange_symbol) {
   wss.onmessage = (msg) => {
 
     var resp = JSON.parse(msg.data);
-
+    
     // filtering on 'match' as this is only JSON document that seems to have all fields
     if (resp.type == 'match') {
       var tr_timestamp = resp.time;

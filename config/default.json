@@ -31,8 +31,11 @@
       "docurl": "https://docs.gdax.com/#websocket-feed",
       "wssurl": "wss://ws-feed.gdax.com",
       "pairs": [
-        { "symbol": "ETH-BTC"}
-      ],
+        { "symbol": "ETH-BTC"},
+        { "symbol": "ETH-USD"},
+        { "symbol": "ETH-EUR"},
+        { "symbol": "BTC-USD"},
+        { "symbol": "BTC-EUR"}        ],
       "active": "N"
     },
     {
