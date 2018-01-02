@@ -133,7 +133,6 @@ function processGEMINI(client,exchange_name,exchange_wss,exchange_symbol) {
   }
 }
 
-
 // Function to subscribe to stream, transform data and publish to Redis from HUOBIAPI
 function processHUOBIAPI(client,exchange_name,exchange_wss,exchange_symbol)
 {
@@ -219,7 +218,6 @@ function processBITTREX(client,exchange_name,exchange_wss,exchange_symbol)
 
 }
 
-
 // Function to subscribe to stream, transform data and publish to Redis from OKEX
 function processOKEX(client, exchange_name,exchange_wss,exchange_symbol) {
 
@@ -277,11 +275,39 @@ function processOKEX(client, exchange_name,exchange_wss,exchange_symbol) {
         tr_side=( records[i][4] == "ask" ? "buy" : "sell" );
         msgout = { "tr_id": tr_id, "tr_timestamp": tr_timestamp, "tr_price": tr_price, "tr_amount": tr_amount, "tr_side": tr_side };
         client.publish(bc_queue,JSON.stringify(msgout));
-        
+
       }
     } else {
       console.log("Unexpected record. Please investigate");
     }
+  };
+}
+
+// Function to subscribe to stream, transform data and publish to Redis from GDAX
+function processGDAX(client, exchange_name,exchange_wss,exchange_symbol) {
+
+  // Connect To Exchange
+  const WebSocket = require('ws');
+  const wss = new WebSocket(exchange_wss);
+
+  // Open connection once one is established
+  wss.onopen = () => {
+
+    // Send request to subscribe
+    wss.send(JSON.stringify(
+      {
+        "type": "subscribe",
+        "product_ids": [
+          exchange_symbol
+        ]
+      }
+    ));
+  };
+
+  // Parse channel information and send to Redis
+  wss.onmessage = (msg) => {
+    var resp = JSON.parse(msg.data);
+    console.log(resp);
   };
 }
 
@@ -291,5 +317,6 @@ module.exports = {
   processGEMINI,
   processHUOBIAPI,
   processBITTREX,
-  processOKEX
+  processOKEX,
+  processGDAX
 };

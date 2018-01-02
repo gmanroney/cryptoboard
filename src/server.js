@@ -72,13 +72,24 @@ function main () {
     }
 
     // Loop through config for OKEX & connect, transform and create Redis pub/sub
-    if ( exchange_name == 'OKEX')
+    if ( exchange_name == 'xOKEX')
     {
       for(var j = 0; j < exchange_symbol_array.length; j++)
       {
         exchange_symbol = exchange_symbol_array[j].symbol;
         console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processOKEX(client, exchange_name, exchange_wss, exchange_symbol);
+      }
+    }
+
+    // Loop through config for GDAX & connect, transform and create Redis pub/sub
+    if ( exchange_name == 'GDAX')
+    {
+      for(var j = 0; j < exchange_symbol_array.length; j++)
+      {
+        exchange_symbol = exchange_symbol_array[j].symbol;
+        console.log(exchange_name, exchange_wss, exchange_symbol);
+        exFn.processGDAX(client, exchange_name, exchange_wss, exchange_symbol);
       }
     }
 
