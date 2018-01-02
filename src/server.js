@@ -2,6 +2,8 @@
 
 //  General Libraries Needed By Application
 var sys = require('util');
+require('moment');
+
 //var bittrex = require('../node_modules/node.bittrex.api/node.bittrex.api');
 var config = require('../config/default.json');
 
