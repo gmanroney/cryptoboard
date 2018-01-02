@@ -43,7 +43,19 @@
       "docurl": "https://www.bitstamp.net/websocket/",
       "wssurl": "???",
       "pairs": [
-        { "symbol": "BTCEUR"}
+        { "symbol": "EURUSD" },
+        { "symbol": "XRPUSD" },
+        { "symbol": "XRPEUR" },
+        { "symbol": "XRPBTC" },
+        { "symbol": "LTCUSD" },
+        { "symbol": "LTCEUR" },
+        { "symbol": "LTCBTC" },
+        { "symbol": "ETHUSD" },
+        { "symbol": "ETHEUR" },
+        { "symbol": "ETHBTC" },
+        { "symbol": "BCHUSD" },
+        { "symbol": "BCHEUR" },
+        { "symbol": "BCHBTC" }
       ],
       "active": "N"
     },
