@@ -1,4 +1,6 @@
-var moment=require('moment');
+/*jshint esversion: 6 */
+
+  var moment=require('moment');
 
 // Function to subscribe to stream, transform data and publish to Redis from BITFINEX
 function processBITFINEX(client, exchange_name,exchange_wss,exchange_symbol) {
@@ -94,7 +96,7 @@ function processHITBTC(client, exchange_name,exchange_wss,exchange_symbol) {
         }
       }
     }
-  }
+  };
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from GEMINI
@@ -130,7 +132,7 @@ function processGEMINI(client,exchange_name,exchange_wss,exchange_symbol) {
         client.publish(bc_queue,JSON.stringify(msg));
       }
     }
-  }
+  };
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from HUOBIAPI
@@ -146,7 +148,7 @@ function processHUOBIAPI(client,exchange_name,exchange_wss,exchange_symbol)
   wss.onopen = () =>
   {
     // Send request to subscribe
-    var symbol = exchange_symbol.toLowerCase()
+    var symbol = exchange_symbol.toLowerCase();
     console.log("Send: " + symbol);
     wss.send(JSON.stringify(
       {
@@ -309,7 +311,7 @@ function processGDAX(client, exchange_name,exchange_wss,exchange_symbol) {
   wss.onmessage = (msg) => {
 
     var resp = JSON.parse(msg.data);
-    
+
     // filtering on 'match' as this is only JSON document that seems to have all fields
     if (resp.type == 'match') {
       var tr_timestamp = resp.time;

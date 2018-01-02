@@ -23,6 +23,7 @@
     "chai": "^4.1.2",
     "config": "^1.29.0",
     "express": "^4.15.2",
+    "grunt-contrib-watch": "^1.0.0",
     "moment": "^2.20.1",
     "node.bittrex.api": "^1.0.0",
     "pako": "^1.0.6",
