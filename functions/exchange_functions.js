@@ -326,6 +326,56 @@ function processGDAX(client, exchange_name,exchange_wss,exchange_symbol) {
   };
 }
 
+
+
+// Function to subscribe to stream, transform data and publish to Redis from GDAX
+function processBITSTAMP(client, exchange_name,exchange_wss,exchange_symbol) {
+
+  // Connect To Exchange
+  const WebSocket = require('ws');
+  const wss = new WebSocket(exchange_wss);
+  var bc_queue = exchange_name + ':' + exchange_symbol;
+
+  // Open connection once one is established
+  wss.onopen = () => {
+
+    // Send request to subscribe
+    wss.send(JSON.stringify(
+      {
+        "type": "subscribe",
+        "product_ids": [
+          exchange_symbol
+        ]
+      }
+    ));
+  };
+
+  // Parse channel information and send to Redis
+  wss.onmessage = (msg) => {
+
+    var resp = JSON.parse(msg.data);
+
+    // filtering on 'match' as this is only JSON document that seems to have all fields
+    if (resp.type == 'match') {
+      var tr_timestamp = resp.time;
+      var tr_id = resp.trade_id;
+      var tr_price = resp.price;
+      // not sure if size is amount but was nearest match
+      var tr_amount = resp.size;
+      var tr_side = resp.side;
+      msgout = { "tr_id": tr_id, "tr_timestamp": tr_timestamp, "tr_price": tr_price, "tr_amount": tr_amount, "tr_side": tr_side };
+      client.publish(bc_queue,JSON.stringify(msgout));
+    }
+  };
+}
+
+
+
+
+
+
+
+
 module.exports = {
   processBITFINEX,
   processHITBTC,

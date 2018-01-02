@@ -27,6 +27,7 @@
     "moment": "^2.20.1",
     "node.bittrex.api": "^1.0.0",
     "pako": "^1.0.6",
+    "pusher": "^1.5.1",
     "redis": "^2.8.0",
     "websockets": "^0.2.0",
     "websockets-client": "0.0.1",

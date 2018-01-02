@@ -83,13 +83,24 @@ function main () {
     }
 
     // Loop through config for GDAX & connect, transform and create Redis pub/sub
-    if ( exchange_name == 'GDAX')
+    if ( exchange_name == 'xGDAX')
     {
       for( var p = 0; p < exchange_symbol_array.length; p++)
       {
         exchange_symbol = exchange_symbol_array[p].symbol;
         console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processGDAX(client, exchange_name, exchange_wss, exchange_symbol);
+      }
+    }
+
+    // Loop through config for BITSTAMP & connect, transform and create Redis pub/sub
+    if ( exchange_name == 'BITSTAMP')
+    {
+      for( var p = 0; p < exchange_symbol_array.length; p++)
+      {
+        exchange_symbol = exchange_symbol_array[p].symbol;
+        console.log(exchange_name, exchange_wss, exchange_symbol);
+        exFn.processBITSTAMP(client, exchange_name, exchange_wss, exchange_symbol);
       }
     }
 

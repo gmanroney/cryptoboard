@@ -43,7 +43,7 @@
       "docurl": "https://www.bitstamp.net/websocket/",
       "wssurl": "???",
       "pairs": [
-        { "symbol": "NONE"}
+        { "symbol": "BTCEUR"}
       ],
       "active": "N"
     },
