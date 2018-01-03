@@ -34,7 +34,6 @@ function main () {
       for( var j = 0; j < exchange_symbol_array.length; j++)
       {
         exchange_symbol = exchange_symbol_array[j].symbol;
-        console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processBITFINEX(client, exchange_name, exchange_wss, exchange_symbol);
       }
     }
@@ -45,7 +44,6 @@ function main () {
       for( var k = 0; k < exchange_symbol_array.length; k++)
       {
         exchange_symbol = exchange_symbol_array[k].symbol;
-        console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processHITBTC(client, exchange_name, exchange_wss, exchange_symbol);
       }
     }
@@ -56,7 +54,6 @@ function main () {
       for( var l = 0; l < exchange_symbol_array.length; l++)
       {
         exchange_symbol = exchange_symbol_array[l].symbol;
-        console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processGEMINI(client, exchange_name, exchange_wss, exchange_symbol);
       }
     }
@@ -67,7 +64,6 @@ function main () {
       for( var m = 0; m < exchange_symbol_array.length; m++)
       {
         exchange_symbol = exchange_symbol_array[m].symbol;
-        console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processHUOBIAPI(client, exchange_name, exchange_wss, exchange_symbol);
       }
     }
@@ -78,7 +74,6 @@ function main () {
       for( var n = 0; n < exchange_symbol_array.length; n++)
       {
         exchange_symbol = exchange_symbol_array[n].symbol;
-        console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processOKEX(client, exchange_name, exchange_wss, exchange_symbol);
       }
     }
@@ -89,7 +84,6 @@ function main () {
       for( var p = 0; p < exchange_symbol_array.length; p++)
       {
         exchange_symbol = exchange_symbol_array[p].symbol;
-        console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processGDAX(client, exchange_name, exchange_wss, exchange_symbol);
       }
     }
@@ -100,7 +94,6 @@ function main () {
       for( var q = 0; q < exchange_symbol_array.length; q++)
       {
         exchange_symbol = exchange_symbol_array[q].symbol;
-        console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processBITSTAMP(client, exchange_name, exchange_wss, exchange_symbol);
       }
     }
@@ -111,7 +104,6 @@ function main () {
       for( var r = 0; r < exchange_symbol_array.length; r++)
       {
         exchange_symbol = exchange_symbol_array[r].symbol;
-        console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processBINANCE(client, exchange_name, exchange_wss, exchange_symbol);
       }
     }
@@ -129,7 +121,6 @@ function main () {
         }
         if ( s ==  ( exchange_symbol_array.length - 1) )
         {
-          console.log(exchange_name, exchange_wss, exchange_symbol);
           exFn.processBITTREX(client, exchange_name, exchange_wss, exchange_symbol);
         }
       }
