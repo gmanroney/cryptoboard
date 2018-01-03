@@ -97,9 +97,9 @@ function main () {
     // Loop through config for BITSTAMP & connect, transform and create Redis pub/sub
     if ( exchange_name == 'BITSTAMP' && exchange_active == 'Y' )
     {
-      for( var p = 0; p < exchange_symbol_array.length; p++)
+      for( var q = 0; q < exchange_symbol_array.length; q++)
       {
-        exchange_symbol = exchange_symbol_array[p].symbol;
+        exchange_symbol = exchange_symbol_array[q].symbol;
         console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processBITSTAMP(client, exchange_name, exchange_wss, exchange_symbol);
       }
@@ -108,9 +108,9 @@ function main () {
     // Loop through config for BITSTAMP & connect, transform and create Redis pub/sub
     if ( exchange_name == 'BINANCE' && exchange_active == 'Y' )
     {
-      for( var p = 0; p < exchange_symbol_array.length; p++)
+      for( var r = 0; r < exchange_symbol_array.length; r++)
       {
-        exchange_symbol = exchange_symbol_array[p].symbol;
+        exchange_symbol = exchange_symbol_array[r].symbol;
         console.log(exchange_name, exchange_wss, exchange_symbol);
         exFn.processBINANCE(client, exchange_name, exchange_wss, exchange_symbol);
       }
@@ -119,15 +119,15 @@ function main () {
     // Loop through config for BITTREX & connect, transform and create Redis pub/sub
     if ( exchange_name == 'BITTREX' && exchange_active == 'Y')
     {
-      for( var q = 0; q < exchange_symbol_array.length; q++)
+      for( var s = 0; s < exchange_symbol_array.length; s++)
       {
         // concatenate all of the symbols together because thats the way this API works for some reason
-        if ( q == 0 ) {
-          exchange_symbol = "\'" + exchange_symbol_array[q].symbol + "\'" ;
+        if ( s == 0 ) {
+          exchange_symbol = "\'" + exchange_symbol_array[s].symbol + "\'" ;
         } else {
-          exchange_symbol = exchange_symbol + "," + "\'" + exchange_symbol_array[q].symbol + "\'";
+          exchange_symbol = exchange_symbol + "," + "\'" + exchange_symbol_array[s].symbol + "\'";
         }
-        if ( q ==  ( exchange_symbol_array.length - 1) )
+        if ( s ==  ( exchange_symbol_array.length - 1) )
         {
           console.log(exchange_name, exchange_wss, exchange_symbol);
           exFn.processBITTREX(client, exchange_name, exchange_wss, exchange_symbol);
