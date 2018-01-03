@@ -52,6 +52,7 @@ function main () {
         } else if ( exchange_name == 'BITSTAMP' ) {
           exFn.processBITSTAMP(client, exchange_name, exchange_wss, exchange_symbol );
         } else if ( exchange_name == 'BINANCE' ) {
+          //exFn.processBINANCE( ...args );
           exFn.processBINANCE(client, exchange_name, exchange_wss, exchange_symbol );
         } else if ( exchange_name == 'BITTREX' ) {
           // concatenate all of the symbols together because thats the way this API works for some reason

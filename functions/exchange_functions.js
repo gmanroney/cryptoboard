@@ -15,7 +15,7 @@ function processMessages (id,ts,exchange_name,exchange_symbol,exchange_wss)
   var sysmsg = [];
   // for json better to write this to  mongo collection or not do at all. Consider dropping ts and using mongo _id perhaps?
   sysmsg[0] = { "id": ts, "time": msg_time, "action": "none", "exchange_name": exchange_name, "exchange_symbol": exchange_symbol, "exchange_wss": exchange_wss };
-  sysmsg[1] = "|ID: " + ts + "|Time: " + msg_time + "|Exchange_Name: " + exchange_name + "|Exchange_Symbol: " + exchange_symbol, "|Exchange_wss: " + exchange_wss;
+  sysmsg[1] = "|ID: " + ts + "|Time: " + msg_time + "|Exchange_Name: " + exchange_name + "|Exchange_Symbol: " + exchange_symbol + "|Exchange_wss: " + exchange_wss;
   sysmsg[2] = { "id": ts, "time": msg_time, "action": "none", "exchange_symbol": exchange_symbol };
   sysmsg[3] = "|ID: " + ts + "|Time: " + msg_time + "|Exchange_Symbol: " + exchange_symbol;
 
