@@ -1,20 +1,20 @@
 /*jshint esversion: 6 */
 
-//  General Libraries Needed By Application
+// Include packages
 var sys = require('util');
-require('moment');
+var redis = require('redis');
+var moment=require('moment');
 
-//var bittrex = require('../node_modules/node.bittrex.api/node.bittrex.api');
+// Include configuration file
 var config = require('../config/default.json');
 
-// Connect to Redis
-var redis = require('redis');
+// Create Redis client connection
 var client = redis.createClient(config.redis.port,config.redis.host);
 client.on('connect', function() {
     console.log('Connected to Redis Server');
 });
 
-// Add in bespoke functions for application
+// Add in functions that perform transformation of data from different exchanges and publish to Redis
 var exFn = require("../functions/exchange_functions.js");
 
 // Main program wrapper
@@ -23,109 +23,52 @@ function main () {
   // Loop through exchanges (preparation for later)
   for (var i = 0; i < config.exchanges.length; i++ )
   {
+
+    // Parse configuration data about each exchange and currencies (symbol) tracked
     var exchange_name = config.exchanges[i].name.toUpperCase();
     var exchange_wss = config.exchanges[i].wssurl;
     var exchange_symbol_array = config.exchanges[i].pairs;
     var exchange_active = config.exchanges[i].active;
 
-    // Loop through config for BITFINEX & connect, transform and create Redis pub/sub
-    if ( exchange_name == 'BITFINEX' && exchange_active == 'Y')
-    {
-      for( var j = 0; j < exchange_symbol_array.length; j++)
-      {
-        exchange_symbol = exchange_symbol_array[j].symbol;
-        exFn.processBITFINEX(client, exchange_name, exchange_wss, exchange_symbol);
-      }
-    }
+    // Only process configurationg for exchange if it is active
+    if ( exchange_active == 'Y') {
 
-    // Loop through config for HITBTC & connect, transform and create Redis pub/sub
-    if ( exchange_name == 'HITBTC'  && exchange_active == 'Y')
-    {
-      for( var k = 0; k < exchange_symbol_array.length; k++)
+      // Loop through config for exchange: connect, transform and create Redis pub/sub
+      for ( var j = 0; j < exchange_symbol_array.length; j++)
       {
-        exchange_symbol = exchange_symbol_array[k].symbol;
-        exFn.processHITBTC(client, exchange_name, exchange_wss, exchange_symbol);
-      }
-    }
-
-    // Loop through config for GEMINI & connect, transform and create Redis pub/sub
-    if ( exchange_name == 'GEMINI'  && exchange_active == 'Y')
-    {
-      for( var l = 0; l < exchange_symbol_array.length; l++)
-      {
-        exchange_symbol = exchange_symbol_array[l].symbol;
-        exFn.processGEMINI(client, exchange_name, exchange_wss, exchange_symbol);
-      }
-    }
-
-    // Loop through config for HUOBIAPI & connect, transform and create Redis pub/sub
-    if ( exchange_name == 'HUOBIAPI'  && exchange_active == 'Y' )
-    {
-      for( var m = 0; m < exchange_symbol_array.length; m++)
-      {
-        exchange_symbol = exchange_symbol_array[m].symbol;
-        exFn.processHUOBIAPI(client, exchange_name, exchange_wss, exchange_symbol);
-      }
-    }
-
-    // Loop through config for OKEX & connect, transform and create Redis pub/sub
-    if ( exchange_name == 'OKEX' && exchange_active == 'Y' )
-    {
-      for( var n = 0; n < exchange_symbol_array.length; n++)
-      {
-        exchange_symbol = exchange_symbol_array[n].symbol;
-        exFn.processOKEX(client, exchange_name, exchange_wss, exchange_symbol);
-      }
-    }
-
-    // Loop through config for GDAX & connect, transform and create Redis pub/sub
-    if ( exchange_name == 'GDAX' && exchange_active == 'Y' )
-    {
-      for( var p = 0; p < exchange_symbol_array.length; p++)
-      {
-        exchange_symbol = exchange_symbol_array[p].symbol;
-        exFn.processGDAX(client, exchange_name, exchange_wss, exchange_symbol);
-      }
-    }
-
-    // Loop through config for BITSTAMP & connect, transform and create Redis pub/sub
-    if ( exchange_name == 'BITSTAMP' && exchange_active == 'Y' )
-    {
-      for( var q = 0; q < exchange_symbol_array.length; q++)
-      {
-        exchange_symbol = exchange_symbol_array[q].symbol;
-        exFn.processBITSTAMP(client, exchange_name, exchange_wss, exchange_symbol);
-      }
-    }
-
-    // Loop through config for BITSTAMP & connect, transform and create Redis pub/sub
-    if ( exchange_name == 'BINANCE' && exchange_active == 'Y' )
-    {
-      for( var r = 0; r < exchange_symbol_array.length; r++)
-      {
-        exchange_symbol = exchange_symbol_array[r].symbol;
-        exFn.processBINANCE(client, exchange_name, exchange_wss, exchange_symbol);
-      }
-    }
-
-    // Loop through config for BITTREX & connect, transform and create Redis pub/sub
-    if ( exchange_name == 'BITTREX' && exchange_active == 'Y')
-    {
-      for( var s = 0; s < exchange_symbol_array.length; s++)
-      {
-        // concatenate all of the symbols together because thats the way this API works for some reason
-        if ( s == 0 ) {
-          exchange_symbol = "\'" + exchange_symbol_array[s].symbol + "\'" ;
+        var exchange_symbol = exchange_symbol_array[j].symbol;
+        if ( exchange_name == 'BITFINEX' ) {
+          exFn.processBITFINEX(client, exchange_name, exchange_wss, exchange_symbol );
+        } else if ( exchange_name == 'HITBTC' ) {
+          exFn.processHITBTC(client, exchange_name, exchange_wss, exchange_symbol );
+        } else if ( exchange_name == 'GEMINI' ) {
+          exFn.processGEMINI(client, exchange_name, exchange_wss, exchange_symbol );
+        } else if ( exchange_name == 'HUOBIAPI' ) {
+          exFn.processHUOBIAPI(client, exchange_name, exchange_wss, exchange_symbol );
+        } else if ( exchange_name == 'OKEX' ) {
+          exFn.processOKEX(client, exchange_name, exchange_wss, exchange_symbol);
+        } else if ( exchange_name == 'GDAX' ) {
+          exFn.processGDAX(client, exchange_name, exchange_wss, exchange_symbol );
+        } else if ( exchange_name == 'BITSTAMP' ) {
+          exFn.processBITSTAMP(client, exchange_name, exchange_wss, exchange_symbol );
+        } else if ( exchange_name == 'BINANCE' ) {
+          exFn.processBINANCE(client, exchange_name, exchange_wss, exchange_symbol );
+        } else if ( exchange_name == 'BITTREX' ) {
+          // concatenate all of the symbols together because thats the way this API works for some reason
+          if ( j == 0 ) {
+            exchange_symbol = "\'" + exchange_symbol_array[s].symbol + "\'" ;
+          } else {
+            exchange_symbol = exchange_symbol + "," + "\'" + exchange_symbol_array[s].symbol + "\'";
+          }
+          if ( j ==  ( exchange_symbol_array.length - 1) )
+          {
+            exFn.processBITTREX(client, exchange_name, exchange_wss, exchange_symbol);
+          }
         } else {
-          exchange_symbol = exchange_symbol + "," + "\'" + exchange_symbol_array[s].symbol + "\'";
-        }
-        if ( s ==  ( exchange_symbol_array.length - 1) )
-        {
-          exFn.processBITTREX(client, exchange_name, exchange_wss, exchange_symbol);
+          console.log("ERROR: Unrecognized exchange name in configuration. Please check " + exchange_name );
         }
       }
     }
-
   }
 
   // End of main function
