@@ -1,6 +1,6 @@
 /*jshint esversion: 6 */
 
-  var moment=require('moment');
+var moment=require('moment');
 
 // Function to subscribe to stream, transform data and publish to Redis from BITFINEX
 function processBITFINEX(client, exchange_name,exchange_wss,exchange_symbol) {
@@ -133,6 +133,28 @@ function processGEMINI(client,exchange_name,exchange_wss,exchange_symbol) {
       }
     }
   };
+}
+
+// Function to subscribe to stream, transform data and publish to Redis from BINANCE
+function processBINANCE(client,exchange_name,exchange_wss,exchange_symbol) {
+
+  // Import functions, define variables and establish connection
+  const api = require('binance');
+  var bc_queue = exchange_name + ':' + exchange_symbol;
+  const binanceWS = new api.BinanceWS();
+
+  binanceWS.onAggTrade( exchange_symbol , (data) => {
+      tr_id=data.tradeId;
+      tr_amount=data.quantity;
+      tr_price=data.price;
+      // not sure if this translation is correct regarding buy or sell
+      // See https://www.investopedia.com/terms/m/marketmaker.asp and
+      // https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md
+      tr_side=( data.maker == true ? 'sell' : 'buy' );
+      tr_timestamp=new Date (data.eventTime);
+      msg = { "tr_id": tr_id, "tr_timestamp": tr_timestamp, "tr_price": tr_price, "tr_amount": tr_amount, "tr_side": tr_side };
+      client.publish(bc_queue,JSON.stringify(msg));
+  });
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from HUOBIAPI
@@ -356,5 +378,6 @@ module.exports = {
   processBITTREX,
   processOKEX,
   processGDAX,
-  processBITSTAMP
+  processBITSTAMP,
+  processBINANCE
 };

@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "angularjs": "0.0.1",
+    "binance": "^1.1.2",
     "chai": "^4.1.2",
     "config": "^1.29.0",
     "express": "^4.15.2",
