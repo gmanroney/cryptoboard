@@ -3,7 +3,7 @@
 //var moment=require('moment');
 
 // Small function to publish transformed message to Redis
-function publishRedis (client,queue,tr) {
+function publishRedis (queue,tr) {
   msgout = { "tr_id": tr.id, "tr_timestamp": tr.timestamp, "tr_price": tr.price, "tr_amount": tr.amount, "tr_side": tr.side };
   client.publish(queue,JSON.stringify(msgout));
 }
@@ -51,7 +51,7 @@ function processMessages (id,ts,exchange_name,exchange_symbol,exchange_wss)
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from BITFINEX
-function processBITFINEX(client, exchange_name,exchange_wss,exchange_symbol)
+function processBITFINEX(exchange_name,exchange_wss,exchange_symbol)
 {
   // Log Message
   var ts = Math.round((new Date()).getTime() / 1000);
@@ -97,14 +97,14 @@ function processBITFINEX(client, exchange_name,exchange_wss,exchange_symbol)
         tr_price=resp[5];
         tr_amount=resp[6];
         tr_side=( tr_amount > 0 ? "buy" : "sell" );
-        publishRedis(client,bc_queue,trade);
+        publishRedis(bc_queue,trade);
       }
     }
   };
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from HITBTC
-function processHITBTC(client, exchange_name,exchange_wss,exchange_symbol)
+function processHITBTC(exchange_name,exchange_wss,exchange_symbol)
 {
   // Log Message
   var ts = Math.round((new Date()).getTime() / 1000);
@@ -153,7 +153,7 @@ function processHITBTC(client, exchange_name,exchange_wss,exchange_symbol)
           tr_price=message.params.data[i].price;
           tr_amount=message.params.data[i].amount;
           tr_side=message.params.data[i].side;
-          publishRedis(client,bc_queue,trade);
+          publishRedis(bc_queue,trade);
         }
       }
     }
@@ -161,7 +161,7 @@ function processHITBTC(client, exchange_name,exchange_wss,exchange_symbol)
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from GEMINI
-function processGEMINI(client,exchange_name,exchange_wss,exchange_symbol)
+function processGEMINI(exchange_name,exchange_wss,exchange_symbol)
 {
   // Log Message
   var ts = Math.round((new Date()).getTime() / 1000);
@@ -194,14 +194,14 @@ function processGEMINI(client,exchange_name,exchange_wss,exchange_symbol)
         tr_price=message.events[i].price;
         tr_side=( message.events[i+1].side == 'ask' ? 'sell' : 'buy' );
         tr_timestamp=new Date(message.timestampms);
-        publishRedis(client,bc_queue,trade);
+        publishRedis(bc_queue,trade);
       }
     }
   };
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from BINANCE
-function processBINANCE(client,exchange_name,exchange_wss,exchange_symbol)
+function processBINANCE(exchange_name,exchange_wss,exchange_symbol)
 {
   // Log Message
   var ts = new Date().getTime();
@@ -223,12 +223,12 @@ function processBINANCE(client,exchange_name,exchange_wss,exchange_symbol)
       // https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md
       trade.side=( data.maker == true ? 'sell' : 'buy' );
       trade.timestamp=new Date (data.eventTime);
-      publishRedis(client,bc_queue,trade);
+      publishRedis(bc_queue,trade);
   });
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from HUOBIAPI
-function processHUOBIAPI(client,exchange_name,exchange_wss,exchange_symbol)
+function processHUOBIAPI(exchange_name,exchange_wss,exchange_symbol)
 {
   // Log Message
   var ts = Math.round((new Date()).getTime() / 1000);
@@ -280,14 +280,14 @@ function processHUOBIAPI(client,exchange_name,exchange_wss,exchange_symbol)
       tr_price=msg.tick.close;
       tr_side="DoNotKnow";
       tr_timestamp=new Date(msg.ts);
-      publishRedis(client,bc_queue,trade);
+      publishRedis(bc_queue,trade);
     }
 
   }});
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from BITTREX
-function processBITTREX(client,exchange_name,exchange_wss,exchange_symbol)
+function processBITTREX(exchange_name,exchange_wss,exchange_symbol)
 {
   // Log Message
   var ts = Math.round((new Date()).getTime() / 1000);
@@ -324,7 +324,7 @@ function processBITTREX(client,exchange_name,exchange_wss,exchange_symbol)
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from OKEX
-function processOKEX(client, exchange_name,exchange_wss,exchange_symbol)
+function processOKEX(exchange_name,exchange_wss,exchange_symbol)
 {
   // Log Message
   var ts = Math.round((new Date()).getTime() / 1000);
@@ -385,7 +385,7 @@ function processOKEX(client, exchange_name,exchange_wss,exchange_symbol)
         // - if you are buying a stock you are going to get the ask price.
         // not sure if what below is correct. Need to recheck
         tr_side=( records[i][4] == "ask" ? "buy" : "sell" );
-        publishRedis(client,bc_queue,trade);
+        publishRedis(bc_queue,trade);
       }
     } else {
       console.log("Unexpected record. Please investigate");
@@ -394,7 +394,7 @@ function processOKEX(client, exchange_name,exchange_wss,exchange_symbol)
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from GDAX
-function processGDAX(client, exchange_name,exchange_wss,exchange_symbol)
+function processGDAX(exchange_name,exchange_wss,exchange_symbol)
 {
   // Log Message
   var ts = Math.round((new Date()).getTime() / 1000);
@@ -434,13 +434,13 @@ function processGDAX(client, exchange_name,exchange_wss,exchange_symbol)
       // not sure if size is amount but was nearest match
       var tr_amount = resp.size;
       var tr_side = resp.side;
-      publishRedis(client,bc_queue,trade);
+      publishRedis(bc_queue,trade);
     }
   };
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from GDAX
-function processBITSTAMP(client, exchange_name,exchange_wss,exchange_symbol)
+function processBITSTAMP(exchange_name,exchange_wss,exchange_symbol)
 {
   // Log Message
   var ts = Math.round((new Date()).getTime() / 1000);
@@ -461,7 +461,7 @@ function processBITSTAMP(client, exchange_name,exchange_wss,exchange_symbol)
     tr_price = data.price;
     tr_side=( data.type == "0" ? "buy" : "sell" );
     tr_timestamp = new Date(data.timestamp * 1000 );
-    publishRedis(client,bc_queue,trade);
+    publishRedis(bc_queue,trade);
   });
 }
 
