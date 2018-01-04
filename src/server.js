@@ -10,7 +10,6 @@ var config = require('../config/default.json');
 
 // Create Redis client connection
 global.client = redis.createClient(config.redis.port,config.redis.host);
-
 client.on('connect', function() {
     console.log('Connected to Redis Server');
 });
