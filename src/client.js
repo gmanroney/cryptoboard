@@ -16,7 +16,7 @@ function clientSubscribe(conn) {
   client.subscribe(conn.exchange + ':' + conn.symbol);
   client.on("message", function(channel, message) {
     const msg = JSON.parse(message);
-    console.log(channel,msg.tr_id,msg.tr_side);
+    console.log(channel,msg.tr_id,msg.tr_side,msg.tr_amount,msg.tr_price,msg.tr_timestamp);
   });
 }
 
@@ -26,7 +26,6 @@ function main () {
   var connect = [];
   connect.exchange = args[2] || 'undefined';
   connect.symbol = args[3] || 'undefined' ;
-  console.log(connect);
   if ( connect.exchange == 'undefined' || connect.symbol == 'undefined' )
   {
     console.log("ERROR: value for exchange and/or symbol not provided. Syntax: nodejs client.js <exchange> <symbol>");
