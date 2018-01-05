@@ -47,7 +47,6 @@ function clientSubscribe(conn) {
     }
     delta = bta.sum - sta.sum;
     console.log('[R]',msg.tr_id,msg.tr_side,msg.tr_amount,msg.tr_price,msg.tr_timestamp,'[BS]',bta.count,bta.avg,bta.median,'[SS]',sta.count,sta.avg,sta.median, '[DS]', delta.toFixed(0));
-    //console.log('[Record]',msg.tr_id,msg.tr_side,msg.tr_amount,msg.tr_price,msg.tr_timestamp);
   });
 }
 

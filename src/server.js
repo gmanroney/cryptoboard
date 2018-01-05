@@ -34,7 +34,7 @@ function main ()
     // Only process configurationg for exchange if it is active
     if ( exchange_active == 'Y') {
 
-      // xxx
+      // Array to hold list of symbols; works for BITREX not sure about others.
       var exchange_symbol_list = [];
 
       // Loop through config for exchange: connect, transform and create Redis pub/sub
@@ -56,10 +56,9 @@ function main ()
         } else if ( exchange_name == 'BITSTAMP' ) {
           exFn.processBITSTAMP(exchange_name, exchange_wss, exchange_symbol );
         } else if ( exchange_name == 'BINANCE' ) {
-          //exFn.processBINANCE( ...args );
           exFn.processBINANCE(exchange_name, exchange_wss, exchange_symbol );
         } else if ( exchange_name == 'BITTREX' ) {
-          //concatenate all of the symbols together because thats the way this API works for some reason
+          // We will send all symbols in one request for BITTREX because it allows it and its more efficient.
           exchange_symbol_list.push(exchange_symbol);
           if ( j ==  ( exchange_symbol_array.length - 1) )
           {
