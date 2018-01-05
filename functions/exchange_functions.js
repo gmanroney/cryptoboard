@@ -11,9 +11,7 @@ function processMessages (id,ts,exchange_name,exchange_symbol)
 {
   msg_time=new Date();
   var sysmsg = [];
-  // for json better to write this to  mongo collection or not do at all. Consider dropping ts and using mongo _id perhaps?
-  var msg_json = { "id": ts, "time": msg_time, "action": "none", "exchange_name": exchange_name, "exchange_symbol": exchange_symbol };
-  var msg_log = "|ID: " + ts + "|Time: " + msg_time + "|Exchange_Name: " + exchange_name + "|Exchange_Symbol: " + exchange_symbol;
+  var msg_log = "[ID]=" + ts + "[Time]=" + msg_time + "[Exchange_Name]=" + exchange_name + "[Exchange_Symbol]=" + exchange_symbol;
 
   if ( id == 0 ) {
     msg_action = "START_FUNCTION";
@@ -36,7 +34,7 @@ function processMessages (id,ts,exchange_name,exchange_symbol)
   }
 
   msg_json.action = msg_action;
-  msg_log = msg_log + "|Action: " + msg_action;
+  msg_log = msg_log + "|Action=" + msg_action;
   console.log(msg_log);
 }
 
@@ -76,18 +74,17 @@ function processBITFINEX(exchange_name,exchange_wss,exchange_symbol)
     // Get channel and symbol from response
     if ( head == "subscribed" )
     {
-      //console.log( bc_queue, " channelID = ", resp.chanId, " currency = ", resp.pair);
       processMessages ('300',ts,exchange_name,exchange_symbol);
     } else {
       if ( resp[1] == "tu")
       {
         // Transform message and send to Redis channel named exchange:symbol
         var trade = [];
-        trade.tr_timestamp=new Date(resp[4]*1000);
-        trade.tr_id=resp[3];
-        trade.tr_price=resp[5];
-        trade.tr_amount=resp[6];
-        trade.tr_side=( tr_amount > 0 ? "buy" : "sell" );
+        trade.timestamp=new Date(resp[4]*1000);
+        trade.id=resp[3];
+        trade.price=resp[5];
+        trade.amount=resp[6];
+        trade.side=( tr_amount > 0 ? "buy" : "sell" );
         publishRedis(bc_queue,trade);
       }
     }
@@ -126,13 +123,11 @@ function processHITBTC(exchange_name,exchange_wss,exchange_symbol)
   wss.onmessage = (msg) => {
 
     // parse response and create queue name
-    //var message = JSON.parse([msg.data]);
     var message = JSON.parse(msg.data);
 
     // Get channel and symbol from response
     if (  message.method == "snapshotTrades" )
     {
-      //console.log( bc_queue, " currency = ", message.params.symbol);
       processMessages ('300',ts,exchange_name,exchange_symbol);
     } else {
       if ( message.method == "updateTrades")
@@ -140,11 +135,11 @@ function processHITBTC(exchange_name,exchange_wss,exchange_symbol)
         // Transform message and send to Redis channel named exchange:symbol
         for ( i = 0; i < message.params.data.length; i++ ) {
           var trade = [];
-          trade.tr_timestamp=message.params.data[i].timestamp;
-          trade.tr_id=message.params.data[i].id;
-          trade.tr_price=message.params.data[i].price;
-          trade.tr_amount=message.params.data[i].amount;
-          trade.tr_side=message.params.data[i].side;
+          trade.timestamp=message.params.data[i].timestamp;
+          trade.id=message.params.data[i].id;
+          trade.price=message.params.data[i].price;
+          trade.amount=message.params.data[i].amount;
+          trade.side=message.params.data[i].side;
           publishRedis(bc_queue,trade);
         }
       }
@@ -163,7 +158,6 @@ function processGEMINI(exchange_name,exchange_wss,exchange_symbol)
   var bc_queue = exchange_name + ':' + exchange_symbol;
   const WebSocket = require('ws');
   wssurl = exchange_wss + '/' + exchange_symbol;
-  console.log(wssurl);
   const wss = new WebSocket(wssurl);
   processMessages ('100',ts,exchange_name,exchange_symbol);
 
@@ -174,7 +168,7 @@ function processGEMINI(exchange_name,exchange_wss,exchange_symbol)
     var message = JSON.parse([msg.data]);
 
     if (message.socket_sequence == 0 ) {
-      console.log( bc_queue, " currency = ", exchange_symbol);
+      processMessages ('300',ts,exchange_name,exchange_symbol);
     }
     // loop through event and extract trade reco
     for ( i = 0; i < message.events.length; i++ )
@@ -182,11 +176,11 @@ function processGEMINI(exchange_name,exchange_wss,exchange_symbol)
       if ( message.events[i].type == 'trade' )
       {
         var trade = [];
-        trade.tr_id=message.events[i].tid;
-        trade.tr_amount=message.events[i].amount;
-        trade.tr_price=message.events[i].price;
-        trade.tr_side=( message.events[i+1].side == 'ask' ? 'sell' : 'buy' );
-        trade.tr_timestamp=new Date(message.timestampms);
+        trade.id=message.events[i].tid;
+        trade.amount=message.events[i].amount;
+        trade.price=message.events[i].price;
+        trade.side=( message.events[i+1].side == 'ask' ? 'sell' : 'buy' );
+        trade.timestamp=new Date(message.timestampms);
         publishRedis(bc_queue,trade);
       }
     }
@@ -240,7 +234,6 @@ function processHUOBIAPI(exchange_name,exchange_wss,exchange_symbol)
   {
     // Send request to subscribe
     var symbol = exchange_symbol.toLowerCase();
-    console.log("Send: " + symbol);
     wss.send(JSON.stringify(
       {
         "sub": "market." + symbol + ".kline.1min",
@@ -255,7 +248,7 @@ function processHUOBIAPI(exchange_name,exchange_wss,exchange_symbol)
   //            Seems to be to do with fact that it is a wrapper but not exactly sure why.
   wss.on ('message', (data) => {
   {
-    console.log("Receive message", data);
+    processMessages ('300',ts,exchange_name,exchange_symbol);
     let text = pako.inflate(data, {
         to: 'string'
     });
@@ -269,11 +262,11 @@ function processHUOBIAPI(exchange_name,exchange_wss,exchange_symbol)
       ));
     } else if (msg.tick) {
       var trade = [];
-      trade.tr_id="DoNotKnow";
-      trade.tr_amount=msg.tick.amount;
-      trade.tr_price=msg.tick.close;
-      trade.tr_side="DoNotKnow";
-      trade.tr_timestamp=new Date(msg.ts);
+      trade.id="DoNotKnow";
+      trade.amount=msg.tick.amount;
+      trade.price=msg.tick.close;
+      trade.side="DoNotKnow";
+      trade.timestamp=new Date(msg.ts);
       publishRedis(bc_queue,trade);
     }
 
@@ -281,25 +274,33 @@ function processHUOBIAPI(exchange_name,exchange_wss,exchange_symbol)
 }
 
 // Function to subscribe to stream, transform data and publish to Redis from BITTREX
-function processBITTREX(exchange_name,exchange_wss,exchange_symbol)
+function processBITTREX(exchange_name,exchange_wss,exchange_symbol_list)
 {
   // Log Message
   var ts = Math.round((new Date()).getTime() / 1000);
-  processMessages ('0',ts,exchange_name,exchange_symbol);
+  processMessages ('0',ts,exchange_name,'exchange_symbol');
 
   // Define constants
-  var bc_queue = exchange_name + ':' + exchange_symbol;
   var bittrex = require('../node_modules/node.bittrex.api/node.bittrex.api');
-  processMessages ('120',ts,exchange_name,exchange_symbol);
+  processMessages ('120',ts,exchange_name,exchange_symbol_list);
 
   bittrex.options({
     websockets: {
       onConnect: function() {
-        console.log('Websocket connected');
-        bittrex.websockets.subscribe(['BTC-ETH','BTC-XRP'], function(data) {
+        bittrex.websockets.subscribe( exchange_symbol_list, function(data) {
           if (data.M === 'updateExchangeState') {
             data.A.forEach(function(data_for) {
-              console.log(data_for);
+              var bc_queue = exchange_name + ':' + data_for.MarketName;
+              trade_fills = data_for.Fills;
+              for ( var i=0; i < trade_fills.length; i++ ) {
+                var trade = [];
+                trade.side = trade_fills[i].OrderType;
+                trade.timestamp = trade_fills[i].TimeStamp;
+                trade.price = trade_fills[i].Rate;
+                trade.amount = trade_fills[i].Quantity;
+                trade.id = 'NotProvided';
+                publishRedis(bc_queue,trade);
+              }
             });
           }
         });
@@ -354,7 +355,7 @@ function processOKEX(exchange_name,exchange_wss,exchange_symbol)
     if ( resp_channel == "addChannel" )
     {
       // Output channel name if first record
-      console.log( bc_queue, " channel name = ", channelName );
+      processMessages ('300',ts,exchange_name,exchange_symbol);
     } else if ( resp_channel == channelName )
     {
       // parse record for data and submit to redis
@@ -364,21 +365,20 @@ function processOKEX(exchange_name,exchange_wss,exchange_symbol)
         // Have used this routine to convert time to GMT; it assumes source also has daylight saving time.
         // This is not the best way to do it so will need to be revisited sometime.
         var trade = [];
-
         var tr_ts=records[i][3].split(":");
         var tr_th=Number(tr_ts[0]) + 16;
         tr_th=( tr_th > 23 ? tr_th = tr_th - 24 : tr_th );
         var tr_d=moment().format("YYYY/MM/DD");
-        trade.tr_timestamp = new Date(tr_d + " " + tr_th + ":" + tr_ts[1] + ":" + tr_ts[2]);
-        trade.tr_id=records[i][0];
-        trade.tr_price=records[i][1];
-        trade.tr_amount=records[i][2];
+        trade.timestamp = new Date(tr_d + " " + tr_th + ":" + tr_ts[1] + ":" + tr_ts[2]);
+        trade.id=records[i][0];
+        trade.price=records[i][1];
+        trade.amount=records[i][2];
         // https://tinyurl.com/ydet9asx
         // The ask price is what sellers are willing to take for it.
         // - if you are selling a stock, you are going to get the bid price,
         // - if you are buying a stock you are going to get the ask price.
         // not sure if what below is correct. Need to recheck
-        trade.tr_side=( records[i][4] == "ask" ? "buy" : "sell" );
+        trade.side=( records[i][4] == "ask" ? "buy" : "sell" );
         publishRedis(bc_queue,trade);
       }
     } else {
@@ -423,12 +423,12 @@ function processGDAX(exchange_name,exchange_wss,exchange_symbol)
     // filtering on 'match' as this is only JSON document that seems to have all fields
     if (resp.type == 'match') {
       var trade = [];
-      trade.tr_timestamp = resp.time;
-      trade.tr_id = resp.trade_id;
-      trade.tr_price = resp.price;
+      trade.timestamp = resp.time;
+      trade.id = resp.trade_id;
+      trade.price = resp.price;
       // not sure if size is amount but was nearest match
-      trade.tr_amount = resp.size;
-      trade.tr_side = resp.side;
+      trade.amount = resp.size;
+      trade.side = resp.side;
       publishRedis(bc_queue,trade);
     }
   };
@@ -452,11 +452,11 @@ function processBITSTAMP(exchange_name,exchange_wss,exchange_symbol)
   socket.bind_all ( function(data)
   {
     var trade = [];
-    trade.tr_id = data.id;
-    trade.tr_amount = data.amount;
-    trade.tr_price = data.price;
-    trade.tr_side=( data.type == "0" ? "buy" : "sell" );
-    trade.tr_timestamp = new Date(data.timestamp * 1000 );
+    trade.id = data.id;
+    trade.amount = data.amount;
+    trade.price = data.price;
+    trade.side=( data.type == "0" ? "buy" : "sell" );
+    trade.timestamp = new Date(data.timestamp * 1000 );
     publishRedis(bc_queue,trade);
   });
 }
