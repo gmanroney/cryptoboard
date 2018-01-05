@@ -18,7 +18,8 @@ client.on('connect', function() {
 var exFn = require("../functions/exchange_functions.js");
 
 // Main program wrapper
-function main () {
+function main ()
+{
 
   // Loop through exchanges (preparation for later)
   for (var i = 0; i < config.exchanges.length; i++ )
@@ -32,6 +33,9 @@ function main () {
 
     // Only process configurationg for exchange if it is active
     if ( exchange_active == 'Y') {
+
+      // xxx
+      var exchange_symbol_list = [];
 
       // Loop through config for exchange: connect, transform and create Redis pub/sub
       for ( var j = 0; j < exchange_symbol_array.length; j++)
@@ -55,15 +59,11 @@ function main () {
           //exFn.processBINANCE( ...args );
           exFn.processBINANCE(exchange_name, exchange_wss, exchange_symbol );
         } else if ( exchange_name == 'BITTREX' ) {
-          // concatenate all of the symbols together because thats the way this API works for some reason
-          if ( j == 0 ) {
-            exchange_symbol = "\'" + exchange_symbol_array[s].symbol + "\'" ;
-          } else {
-            exchange_symbol = exchange_symbol + "," + "\'" + exchange_symbol_array[s].symbol + "\'";
-          }
+          //concatenate all of the symbols together because thats the way this API works for some reason
+          exchange_symbol_list.push(exchange_symbol);
           if ( j ==  ( exchange_symbol_array.length - 1) )
           {
-            exFn.processBITTREX(exchange_name, exchange_wss, exchange_symbol);
+            exFn.processBITTREX(exchange_name, exchange_wss, exchange_symbol_list);
           }
         } else {
           console.log("ERROR: Unrecognized exchange name in configuration. Please check " + exchange_name );
