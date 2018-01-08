@@ -1,5 +1,26 @@
 /*jshint esversion: 6 */
 
+// Create Redis client connection
+function redisClient (flag) {
+
+  if (flag) {
+    global.client = redis.createClient(config.redis.port,config.redis.host);
+    client.on('connect', function() {
+        console.log(new Date() + ': Connected to Redis Server');
+    });
+    flag=false;
+  }
+  return flag;
+}
+
+// Get argument from command line which is exchange we want to connect to and send to Redis
+function getArguments() {
+  const args = process.argv;
+  var connect = [];
+  connect.exchange = args[2] || 'undefined';
+  return connect.exchange;
+}
+
 // Small function to publish transformed message to Redis
 function publishRedis (queue,tr) {
   msgout = { "tr_id": tr.id, "tr_timestamp": tr.timestamp, "tr_price": tr.price, "tr_amount": tr.amount, "tr_side": tr.side };
@@ -33,7 +54,6 @@ function processMessages (id,ts,exchange_name,exchange_symbol)
     msg_action = "UNKNOWN";
   }
 
-  msg_json.action = msg_action;
   msg_log = msg_log + "|Action=" + msg_action;
   console.log(msg_log);
 }
@@ -470,5 +490,8 @@ module.exports = {
   processOKEX,
   processGDAX,
   processBITSTAMP,
-  processBINANCE
+  processBINANCE,
+  processMessages,
+  getArguments,
+  redisClient
 };
