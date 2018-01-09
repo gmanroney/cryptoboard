@@ -1,8 +1,10 @@
 /*jshint esversion: 6 */
 
 // Include packages
-var sys = require('util');
+var util = require('util');
 var moment=require('moment');
+var fs = require('fs');
+
 global.redis = require('redis');
 
 // Include configuration file
@@ -91,4 +93,10 @@ function main ()
 }
 
 // Start application
+var access = fs.createWriteStream('../logs/server.log');
+process.stdout.write = process.stderr.write = access.write.bind(access);
+process.on('uncaughtException', function(err) {
+  console.error((err && err.stack) ? err.stack : err);
+});
+
 main();
